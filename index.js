@@ -6,14 +6,16 @@ const { Storage } = require('@google-cloud/storage');
 const { Firestore } = require('@google-cloud/firestore');
 const path = require('path');
 const fs = require('fs');
+require("dotenv").config();
 
 
-const keyFilePath = "submissionmlgc-alvinsetyap-1687b533a136.json"
+const keyFilePath = process.env.KEY_PATH
+
 
 const init = async () => {
     const server = Hapi.server({
-        port: 8000,
-        host: '127.0.0.1',
+        port: parseInt(process.env.PORT),
+        host: process.env.HOST,
         routes: {
             cors: {
               origin: ['*'],
@@ -21,18 +23,16 @@ const init = async () => {
         },
     });
 
-    // Initialize Google Cloud Storage and Firestore
+
     const storage = new Storage({ keyFilename: keyFilePath });
     const firestore = new Firestore({ keyFilename: keyFilePath });
 
-    // Load the model from the cloud bucket
-    const bucketName = 'submissionmlgc-alvinsetyap.appspot.com'; // Replace with your bucket name
-    const modelPath = 'submissions-model'; // Replace with the path to your model directory in the bucket
+    const bucketName = process.env.BUCKET_NAME; 
+    const modelPath = ''; 
     const localModelPath = path.join(__dirname, 'model');
 
     if (!fs.existsSync(localModelPath)) {
         fs.mkdirSync(localModelPath);
-        console.log('Downloading model from bucket...');
         await storage.bucket(bucketName).file(`${modelPath}/model.json`).download({ destination: path.join(localModelPath, 'model.json') });
         await storage.bucket(bucketName).file(`${modelPath}/group1-shard1of4.bin`).download({ destination: path.join(localModelPath, 'group1-shard1of4.bin') });
         await storage.bucket(bucketName).file(`${modelPath}/group1-shard2of4.bin`).download({ destination: path.join(localModelPath, 'group1-shard2of4.bin') });
@@ -50,7 +50,7 @@ const init = async () => {
                 output: 'stream',
                 parse: true,
                 multipart: true,
-                maxBytes: 1000000, // Set maximum allowed payload size
+                maxBytes: 1000000,
             },
         },
         handler: async (request, h) => {
@@ -83,14 +83,13 @@ const init = async () => {
                      }).code(413)
                 }
 
-                // Preprocess the image directly from the buffer
+
                 const imageTensor = tf.node
-                    .decodeJpeg(buffer) // Decode image as RGB
-                    .resizeNearestNeighbor([224, 224]) // Resize to model input shape (224x224)
+                    .decodeJpeg(buffer) 
+                    .resizeNearestNeighbor([224, 224])
                     .expandDims()
                     .toFloat()
 
-                // Perform prediction
                 const prediction = model.predict(imageTensor);
                 // const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
                 const score = await prediction.data()
