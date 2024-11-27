@@ -16,7 +16,7 @@ const init = async () => {
         host: process.env.HOST,
         routes: {
             cors: {
-              origin: ['https://asclepius-dot-submissionmlgc-alvinsetyap.et.r.appspot.com/'],
+              origin: ['https://asclepius-dot-submissionmlgc-alvinsetyap.et.r.appspot.com'],
             },
         },
     });
