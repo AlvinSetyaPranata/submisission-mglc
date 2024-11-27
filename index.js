@@ -9,8 +9,6 @@ const fs = require('fs');
 require("dotenv").config();
 
 
-const keyFilePath = process.env.KEY_PATH
-
 
 const init = async () => {
     const server = Hapi.server({
@@ -24,8 +22,8 @@ const init = async () => {
     });
 
 
-    const storage = new Storage({ keyFilename: keyFilePath });
-    const firestore = new Firestore({ keyFilename: keyFilePath });
+    const storage = new Storage();
+    const firestore = new Firestore();
 
     const bucketName = process.env.BUCKET_NAME; 
     const modelPath = ''; 
