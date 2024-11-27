@@ -26,12 +26,12 @@ const init = async () => {
     const firestore = new Firestore();
 
     const bucketName = process.env.BUCKET_NAME; 
-    const modelPath = process.env.MODEL_DIR; 
+    const modelPath = process.env.MODEL; 
     const localModelPath = path.join(__dirname, 'model');
 
     if (!fs.existsSync(localModelPath)) {
         fs.mkdirSync(localModelPath);
-        await storage.bucket(bucketName).file(`${modelPath}model.json`).download({ destination: path.join(localModelPath, 'model.json') });
+        await storage.bucket(bucketName).file(`${modelPath}/model.json`).download({ destination: path.join(localModelPath, 'model.json') });
         await storage.bucket(bucketName).file(`${modelPath}/group1-shard1of4.bin`).download({ destination: path.join(localModelPath, 'group1-shard1of4.bin') });
         await storage.bucket(bucketName).file(`${modelPath}/group1-shard2of4.bin`).download({ destination: path.join(localModelPath, 'group1-shard2of4.bin') });
         await storage.bucket(bucketName).file(`${modelPath}/group1-shard3of4.bin`).download({ destination: path.join(localModelPath, 'group1-shard3of4.bin') });
