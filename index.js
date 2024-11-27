@@ -26,7 +26,7 @@ const init = async () => {
     const firestore = new Firestore();
 
     const bucketName = process.env.BUCKET_NAME; 
-    const modelPath = process.env.MODEL; 
+    const modelPath = process.env.MODEL_DIR; 
     const localModelPath = path.join(__dirname, 'model');
 
     if (!fs.existsSync(localModelPath)) {
