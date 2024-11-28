@@ -17,6 +17,7 @@ const init = async () => {
         routes: {
             cors: {
               origin: ['https://asclepius-dot-submissionmlgc-alvinsetyap.et.r.appspot.com'],
+              additionalHeaders: ['authorization', 'content-type']
             },
         },
     });
