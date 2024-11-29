@@ -23,8 +23,12 @@ const init = async () => {
     });
 
 
-    const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
-    const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    // const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    // const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    
+    const storage = new Storage();
+    const firestore = new Firestore();
+
 
     const bucketName = process.env.BUCKET_NAME; 
     const modelPath = process.env.MODEL_DIR; 
