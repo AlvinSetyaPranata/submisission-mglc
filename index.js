@@ -99,17 +99,18 @@ const init = async () => {
                      }).code(413)
                 }
 
-
+                
+                
                 const imageTensor = tf.node
-                    .decodeJpeg(buffer) 
-                    .resizeNearestNeighbor([224, 224])
-                    .expandDims()
-                    .toFloat()
-
+                .decodeJpeg(buffer) 
+                .resizeNearestNeighbor([224, 224])
+                .expandDims()
+                .toFloat()
+                
                 const prediction = model.predict(imageTensor);
                 // const predictedClass = tf.argMax(prediction, 1).dataSync()[0];
                 const score = await prediction.data()
-
+                
                 const confidientScore = Math.max(...score) * 100
                 let result = 0
                 
@@ -118,7 +119,7 @@ const init = async () => {
                 } else  {
                     result = 0            
                 }
-
+                
                 // Map prediction to response
                 const resultMap = {
                     0: {
@@ -130,12 +131,12 @@ const init = async () => {
                         suggestion: 'Segera periksa ke dokter!',
                     },
                 };
-
+                
                 const response = resultMap[result] || {
                     result: 'Unknown',
                     suggestion: 'Hasil tidak dapat diinterpretasikan.',
                 };
-
+                
                 // Create prediction result
                 const predictionResult = {
                     id: uuid.v4(),
@@ -143,11 +144,11 @@ const init = async () => {
                     suggestion: response.suggestion,
                     createdAt: new Date().toISOString(),
                 };
-
-
+                
+                
                 // Store result in Firestore
                 await firestore.collection('predictions').doc(predictionResult.id).set(predictionResult);
-
+                
                 return h.response({
                     status: 'success',
                     message: 'Model is predicted successfully',
