@@ -23,11 +23,11 @@ const init = async () => {
     });
 
 
-    // const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
-    // const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
     
-    const storage = new Storage();
-    const firestore = new Firestore();
+    // const storage = new Storage();
+    // const firestore = new Firestore();
 
 
     const bucketName = process.env.BUCKET_NAME; 
@@ -161,6 +161,45 @@ const init = async () => {
             }
         },
     });
+
+    // Grab history
+
+    server.route({
+        method: 'GET',
+        path: '/predict/histories',
+        handler: async (request, h) => {
+            try {
+                const predictionsSnapshot = await firestore.collection('predictions').get();
+    
+                if (predictionsSnapshot.empty) {
+                    return h.response({
+                        status: 'success',
+                        data: [],
+                    }).code(200);
+                }
+    
+
+                const data = predictionsSnapshot.docs.map((doc) => {
+                    const history = doc.data(); 
+                    return {
+                        id: doc.id,
+                        history: {
+                            ...history,
+                        },
+                    };
+                });
+    
+                return h.response({
+                    status: 'success',
+                    data,
+                }).code(200);
+            } catch (error) {
+                console.error(error);
+                throw Boom.internal('Terjadi kesalahan saat mengambil data history');
+            }
+        },
+    });
+    
 
     server.ext('onPreResponse', (request, h) => {
         const response = request.response;
