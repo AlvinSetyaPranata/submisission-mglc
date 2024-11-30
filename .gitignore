@@ -2,3 +2,5 @@ node_modules
 model
 .env
 *.json
+.DS_Store
+*.zip

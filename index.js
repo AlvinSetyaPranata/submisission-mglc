@@ -23,11 +23,11 @@ const init = async () => {
     });
 
 
-    const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
-    const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    // const storage = new Storage({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
+    // const firestore = new Firestore({ keyFilename: "submissionmlgc-alvinsetyap-1687b533a136.json" });
     
-    // const storage = new Storage();
-    // const firestore = new Firestore();
+    const storage = new Storage();
+    const firestore = new Firestore();
 
 
     const bucketName = process.env.BUCKET_NAME; 
@@ -70,7 +70,6 @@ const init = async () => {
             },
         },
         handler: async (request, h) => {
-            console.log(h)
             try {
                 const { payload } = request;
                 
@@ -146,7 +145,6 @@ const init = async () => {
                     data: predictionResult,
                 }).code(201);
             } catch (error) {
-                console.log(error)
                 if (Boom.isBoom(error, 413)) {
                     return h.response({
                         status: "fail",
