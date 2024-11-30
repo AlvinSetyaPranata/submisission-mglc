@@ -79,7 +79,6 @@ const init = async () => {
                     return h.response({
                         status: "fail",
                         message: "Image is required",
-                        data : 0
                      }).code(400)
                 }
 
@@ -152,14 +151,12 @@ const init = async () => {
                     return h.response({
                         status: "fail",
                         message: "Payload content length greater than maximum allowed: 1000000",
-                        data : 0
                      }).code(413)
                 }
 
                 return h.response({
                     status: "fail",
                     message: "Terjadi kesalahan dalam melakukan prediksi",
-                    data : 0
                  }).code(400)
             }
         },
@@ -172,7 +169,6 @@ const init = async () => {
             return h.response({
                 status: "fail",
                 message: "Payload content length greater than maximum allowed: 1000000",
-                data : 0
              }).code(413)
         }
         return h.continue;
