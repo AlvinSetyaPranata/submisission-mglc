@@ -70,6 +70,7 @@ const init = async () => {
             },
         },
         handler: async (request, h) => {
+            console.log(h)
             try {
                 const { payload } = request;
                 
@@ -90,15 +91,6 @@ const init = async () => {
                 }
 
                 const buffer = Buffer.concat(chunks);
-
-                if (buffer.length > 1000000) {
-                    return h.response({
-                        status: "fail",
-                        message: "Payload content length greater than maximum allowed: 1000000",
-                        data : 0
-                     }).code(413)
-                }
-
                 
                 
                 const imageTensor = tf.node
@@ -155,6 +147,7 @@ const init = async () => {
                     data: predictionResult,
                 }).code(201);
             } catch (error) {
+                console.log(error)
                 if (Boom.isBoom(error, 413)) {
                     return h.response({
                         status: "fail",
@@ -170,6 +163,19 @@ const init = async () => {
                  }).code(400)
             }
         },
+    });
+
+    server.ext('onPreResponse', (request, h) => {
+        const response = request.response;
+        if (response.isBoom && response.output.statusCode === 413) {
+
+            return h.response({
+                status: "fail",
+                message: "Payload content length greater than maximum allowed: 1000000",
+                data : 0
+             }).code(413)
+        }
+        return h.continue;
     });
 
     await server.start();
